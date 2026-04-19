@@ -1,6 +1,8 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { formatLagos, todayLagosKey } from '@/lib/dates/lagos'
 
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardPage() {
   const supabase = createSupabaseServerClient()
   const {
@@ -8,7 +10,7 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser()
 
   const today = todayLagosKey()
-  const todayLabel = formatLagos(new Date(), "EEEE, d MMMM")
+  const todayLabel = formatLagos(new Date(), 'EEEE, d MMMM')
 
   return (
     <section className="space-y-10 py-6">
@@ -21,9 +23,18 @@ export default async function DashboardPage() {
       </header>
 
       <div className="grid gap-6 md:grid-cols-3">
-        <Card title="Today's session" body="Plan generation runs in M2. Once seeded, this card surfaces your next workout with a two-tap logging flow." />
-        <Card title="Macros" body="Nutrition UI ships in M4 — live ring for kcal / protein / carbs / fat plus Nigerian food DB." />
-        <Card title="Adaptation" body="Weekly recalibration lands in M5. Every Sunday 23:59 Lagos, the plan adjusts within safety caps." />
+        <Card
+          title="Today's session"
+          body="Plan generation runs in M2. Once seeded, this card surfaces your next workout with a two-tap logging flow."
+        />
+        <Card
+          title="Macros"
+          body="Nutrition UI ships in M4 — live ring for kcal / protein / carbs / fat plus Nigerian food DB."
+        />
+        <Card
+          title="Adaptation"
+          body="Weekly recalibration lands in M5. Every Sunday 23:59 Lagos, the plan adjusts within safety caps."
+        />
       </div>
 
       <footer className="section-eyebrow pt-6">

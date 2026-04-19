@@ -3,7 +3,7 @@ import 'server-only'
 import { cookies } from 'next/headers'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import type { Database } from './types'
-import { getServerEnv } from '@/lib/env'
+import { getServerEnv, getServiceRoleKey } from '@/lib/env'
 
 /**
  * Request-scoped Supabase client backed by the user's session cookie.
@@ -53,15 +53,11 @@ export function createSupabaseServerClient() {
  */
 export function createSupabaseServiceRoleClient() {
   const env = getServerEnv()
-  return createServerClient<Database>(
-    env.NEXT_PUBLIC_SUPABASE_URL,
-    env.SUPABASE_SERVICE_ROLE_KEY,
-    {
-      cookies: {
-        get: () => undefined,
-        set: () => undefined,
-        remove: () => undefined,
-      },
+  return createServerClient<Database>(env.NEXT_PUBLIC_SUPABASE_URL, getServiceRoleKey(), {
+    cookies: {
+      get: () => undefined,
+      set: () => undefined,
+      remove: () => undefined,
     },
-  )
+  })
 }
