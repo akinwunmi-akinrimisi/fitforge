@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "jsx": "preserve",
+    "types": ["node"],
+    "plugins": []
+  },
+  "include": ["src/seed/**/*.ts", "src/domain/**/*.ts", "src/lib/**/*.ts"],
+  "exclude": ["src/lib/supabase/middleware.ts", "src/lib/supabase/client.ts", "**/*.test.ts"]
+}
