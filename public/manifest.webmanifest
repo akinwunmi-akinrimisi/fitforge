@@ -1,0 +1,12 @@
+{
+  "name": "FitForge90",
+  "short_name": "FitForge90",
+  "description": "A 90-day adaptive training and nutrition program.",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A0A0A",
+  "theme_color": "#0A0A0A",
+  "icons": []
+}

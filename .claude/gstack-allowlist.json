@@ -1,0 +1,5 @@
+{
+  "allowed_commands": ["/qa", "/browse", "/careful", "/freeze", "/review"],
+  "forbidden_commands": ["/plan", "/breakdown", "/spec"],
+  "reason": "Superpowers handles planning and decomposition for this project. gstack is used only for quality, review, and high-stakes edit support."
+}

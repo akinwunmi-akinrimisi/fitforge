@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 10% 96%;
+    --foreground: 20 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 10% 10%;
+    --primary: 12 78% 50%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 40 8% 88%;
+    --muted-foreground: 20 5% 40%;
+    --accent: 125 15% 48%;
+    --accent-foreground: 0 0% 100%;
+    --border: 20 6% 85%;
+    --ring: 12 78% 50%;
+    --radius: 0.25rem;
+  }
+
+  .dark {
+    --background: 0 0% 4%;
+    --foreground: 40 5% 95%;
+    --card: 0 0% 7%;
+    --card-foreground: 40 5% 95%;
+    --primary: 12 78% 55%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 40 5% 65%;
+    --accent: 125 20% 55%;
+    --accent-foreground: 0 0% 0%;
+    --border: 0 0% 18%;
+    --ring: 12 78% 55%;
+  }
+
+  [data-surface='session'] {
+    color-scheme: dark;
+    --background: 0 0% 4%;
+    --foreground: 40 5% 95%;
+    --card: 0 0% 7%;
+    --card-foreground: 40 5% 95%;
+    --primary: 12 78% 55%;
+    --primary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 40 5% 65%;
+    --accent: 125 20% 55%;
+    --accent-foreground: 0 0% 0%;
+    --border: 0 0% 18%;
+    --ring: 12 78% 55%;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: 'ss01', 'ss02';
+  }
+
+  /* Section category label pattern — the only uppercase heading style */
+  .section-eyebrow {
+    @apply text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground;
+  }
+
+  .numeric {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  .prose-readable {
+    max-width: 66ch;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
