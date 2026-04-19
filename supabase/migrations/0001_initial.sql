@@ -10,7 +10,9 @@ begin;
 -- Extensions
 -- ---------------------------------------------------------------------------
 create extension if not exists "pgcrypto";
-create extension if not exists "citext";
+-- Note: `citext` skipped — on some Supabase self-hosted setups the `postgres`
+-- role lacks permission to create base types. We use `text` + a lowercase
+-- unique index instead, which gives the same case-insensitive uniqueness.
 
 -- ---------------------------------------------------------------------------
 -- Shared updated_at trigger
@@ -66,7 +68,7 @@ exception when duplicate_object then null; end $$;
 -- ---------------------------------------------------------------------------
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
-  email citext not null unique,
+  email text not null,
   display_name text,
   sex public.sex_enum,
   age smallint check (age between 14 and 120),
@@ -89,6 +91,9 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+create unique index if not exists profiles_email_lower_idx
+  on public.profiles (lower(email));
 
 drop trigger if exists profiles_set_updated_at on public.profiles;
 create trigger profiles_set_updated_at
