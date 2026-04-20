@@ -1,8 +1,16 @@
 /* FitForge90 service worker — offline fallback + push handler stub. */
-const VERSION = 'v1'
+/* Bump VERSION whenever manifest/icons/offline page change so old SW caches flush. */
+const VERSION = 'v2'
 const CACHE = `fitforge-${VERSION}`
 const OFFLINE_FALLBACK = '/offline.html'
-const PRECACHE = [OFFLINE_FALLBACK, '/manifest.webmanifest', '/robots.txt']
+const PRECACHE = [
+  OFFLINE_FALLBACK,
+  '/manifest.webmanifest',
+  '/robots.txt',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/icons/icon-maskable.png',
+]
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
