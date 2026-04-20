@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { Toaster } from '@/components/ui/toaster'
 import { SettingsForm } from './settings-form'
+import { PushSubscribeButton } from './push-subscribe-button'
 
 export const dynamic = 'force-dynamic'
 
@@ -53,13 +54,13 @@ export default async function SettingsPage() {
         </div>
       </section>
 
-      <section className="space-y-2 border border-border bg-card p-5">
+      <section className="space-y-3 border border-border bg-card p-5">
         <p className="section-eyebrow">Notifications</p>
         <p className="prose-readable text-sm text-muted-foreground">
-          Default schedule for desk-mobility reminders: 10:00, 12:00, 14:00, 16:00 (Africa/Lagos).
-          Web-push delivery activates once the push-subscription backend ships (M6.5). Your
-          configured times are stored on your profile and will fire automatically at that point.
+          Mobility-break reminders fire at the times you set above (Africa/Lagos). Enable push once
+          per device to start receiving them.
         </p>
+        <PushSubscribeButton vapidPublicKey={process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? null} />
       </section>
 
       <Toaster />
