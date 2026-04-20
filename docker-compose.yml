@@ -45,7 +45,7 @@ services:
       start_period: 30s
     labels:
       - traefik.enable=true
-      - traefik.docker.network=traefik-proxy
+      - traefik.docker.network=n8n_n8n_network
 
       # HTTPS router
       - traefik.http.routers.fitforge.rule=Host(`fitforge.operscale.cloud`)
