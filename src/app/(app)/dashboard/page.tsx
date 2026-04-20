@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
 import { formatLagos, lagosAppDayWindowUtc, todayAppDayKey, todayLagosKey } from '@/lib/dates/lagos'
+import { PhaseProgressBar } from './phase-progress-bar'
 
 export const dynamic = 'force-dynamic'
 
@@ -99,6 +100,12 @@ export default async function DashboardPage() {
           Signed in as <span className="numeric">{user?.email}</span>.
         </p>
       </header>
+
+      {sessionRow && (
+        <section className="border border-border bg-card p-5">
+          <PhaseProgressBar dayNumber={sessionRow.day_number} />
+        </section>
+      )}
 
       <div className="grid gap-6 md:grid-cols-3">
         {/* Session */}

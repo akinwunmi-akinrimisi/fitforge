@@ -42,6 +42,9 @@ const config: Config = {
           foreground: 'hsl(var(--card-foreground))',
         },
       },
+      gridTemplateColumns: {
+        13: 'repeat(13, minmax(0, 1fr))',
+      },
       fontFamily: {
         display: ['var(--font-display)', 'ui-serif', 'Georgia', 'serif'],
         sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui'],
@@ -60,14 +63,14 @@ const config: Config = {
           '0%': { transform: 'translateX(8px)', opacity: '0' },
           '100%': { transform: 'translateX(0)', opacity: '1' },
         },
-        'crossfade': {
+        crossfade: {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
       },
       animation: {
         'slide-in-right': 'slide-in-right 120ms ease-out',
-        'crossfade': 'crossfade 180ms ease-in-out',
+        crossfade: 'crossfade 180ms ease-in-out',
       },
     },
   },
