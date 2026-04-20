@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic'
 const navItems = [
   { href: '/dashboard', label: 'Today' },
   { href: '/session', label: 'Session' },
+  { href: '/plan', label: 'Plan' },
   { href: '/nutrition', label: 'Nutrition' },
   { href: '/progress', label: 'Progress' },
   { href: '/mobility', label: 'Mobility' },
