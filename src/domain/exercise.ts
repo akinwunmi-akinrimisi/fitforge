@@ -32,13 +32,7 @@ export type Equipment = z.infer<typeof equipmentEnum>
 export const difficultyEnum = z.enum(['beginner', 'intermediate', 'advanced'])
 export type Difficulty = z.infer<typeof difficultyEnum>
 
-export const movementPhaseEnum = z.enum([
-  'setup',
-  'eccentric',
-  'bottom',
-  'concentric',
-  'lockout',
-])
+export const movementPhaseEnum = z.enum(['setup', 'eccentric', 'bottom', 'concentric', 'lockout'])
 export type MovementPhase = z.infer<typeof movementPhaseEnum>
 
 export const exerciseSchema = z
@@ -50,7 +44,7 @@ export const exerciseSchema = z
     secondary_muscles: z.array(z.string()),
     equipment: z.array(equipmentEnum).min(1),
     difficulty: difficultyEnum,
-    gif_url: z.string().url(),
+    gif_url: z.string().url().nullable(),
 
     posture_cues: z.array(z.string()).min(3).max(6),
     benefits: z.object({

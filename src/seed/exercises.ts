@@ -1,23 +1,100 @@
 /**
- * Exercise library seed — M2.
+ * Exercise library seed — M2 (media layer fixed in 0006_exercise_media).
  *
  * Every exercise referenced by a phase template lives here with the full
  * educational + safety schema. Content is deliberate and reviewed — users
  * read the posture cues and safety warnings during live lifting sessions.
  *
- * M2 ships the core ~50 exercises the plan generator references. Later
- * milestones can add more (progression variants, alternate implements).
- *
  * Schema: see src/domain/exercise.ts.
  * Spec:   docs/specs/exercise-library-spec.md.
  *
- * GIF URLs are placeholders pointing at a curated CDN path we'll populate
- * with real curated clips in M3 before the session UI ships. Swapping the
- * base URL is a one-line change.
+ * Media: slugs map to static photos from yuhonas/free-exercise-db (public
+ * domain). 12 mobility/warmup primitives have no analog in that DB and
+ * resolve to null — the session UI gracefully skips the <img>.
+ * Source of truth for the mapping is MEDIA_MAP below AND the `exercises`
+ * table gif_url column (migration 0006). Keep them in sync when adding exercises.
  */
 import type { Exercise } from '@/domain/exercise'
 
-const GIF = (slug: string) => `https://media.giphy.com/media/vetted/${slug}/giphy.gif`
+const YUHONAS = 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises'
+
+const MEDIA_MAP: Record<string, string | null> = {
+  // push
+  'barbell-bench-press': 'Barbell_Bench_Press_-_Medium_Grip',
+  'cable-triceps-pushdown': 'Triceps_Pushdown',
+  'close-grip-bench-press': 'Close-Grip_Barbell_Bench_Press',
+  dips: 'Parallel_Bar_Dip',
+  'incline-dumbbell-press': 'Incline_Dumbbell_Press',
+  'lateral-raises': 'Side_Lateral_Raise',
+  'overhead-press': 'Standing_Military_Press',
+  'push-ups': 'Pushups',
+  'seated-dumbbell-shoulder-press': 'Dumbbell_Shoulder_Press',
+  'skull-crushers': 'EZ-Bar_Skullcrusher',
+  // pull
+  'barbell-curl': 'Barbell_Curl',
+  'barbell-row': 'Bent_Over_Barbell_Row',
+  'chest-supported-row': 'Dumbbell_Incline_Row',
+  'chin-ups': 'Chin-Up',
+  'dumbbell-bicep-curl': 'Dumbbell_Bicep_Curl',
+  'face-pull': 'Face_Pull',
+  'lat-pulldown': 'Wide-Grip_Lat_Pulldown',
+  'pull-ups': 'Pullups',
+  'seated-cable-row': 'Seated_Cable_Rows',
+  'single-arm-dumbbell-row': 'One-Arm_Dumbbell_Row',
+  // squat
+  'barbell-back-squat': 'Barbell_Squat',
+  'bulgarian-split-squat': 'Split_Squats',
+  'front-squat': 'Front_Squat_Clean_Grip',
+  'goblet-squat': 'Goblet_Squat',
+  'pause-squat': 'Barbell_Squat',
+  // hinge
+  'conventional-deadlift': 'Barbell_Deadlift',
+  'hip-thrust': 'Barbell_Hip_Thrust',
+  'kettlebell-swing': 'One-Arm_Kettlebell_Swings',
+  'romanian-deadlift': 'Romanian_Deadlift',
+  'trap-bar-deadlift': 'Trap_Bar_Deadlift',
+  // carry
+  'farmers-carry': 'Farmers_Walk',
+  'sled-push': null,
+  // core
+  'ab-wheel-rollout': 'Barbell_Ab_Rollout',
+  'cable-crunch': 'Cable_Crunch',
+  'dead-bug': 'Dead_Bug',
+  'hanging-knee-raise': 'Hanging_Leg_Raise',
+  'hanging-leg-raise': 'Hanging_Leg_Raise',
+  'pallof-press': 'Pallof_Press',
+  plank: 'Plank',
+  'side-plank': null,
+  // conditioning
+  'assault-bike-intervals': 'Air_Bike',
+  'kettlebell-complex': null,
+  'rowing-intervals': 'Rowing_Stationary',
+  'treadmill-intervals': 'Running_Treadmill',
+  'treadmill-steady-state': 'Jogging_Treadmill',
+  // mobility
+  'couch-stretch': null,
+  'dead-hang': null,
+  'neck-retraction': null,
+  'pigeon-pose': null,
+  'thoracic-rotation-quadruped': null,
+  'wall-slides': null,
+  // warmup
+  'band-pull-apart': 'Band_Pull_Apart',
+  'cat-cow': 'Cat_Stretch',
+  'glute-bridge': 'Barbell_Glute_Bridge',
+  'hip-90-90': null,
+  'leg-swings': null,
+  'scapular-push-ups': null,
+  'worlds-greatest-stretch': 'Worlds_Greatest_Stretch',
+}
+
+const GIF = (slug: string): string | null => {
+  if (!(slug in MEDIA_MAP)) {
+    throw new Error(`exercises.ts: no media mapping for slug "${slug}" — update MEDIA_MAP`)
+  }
+  const folder = MEDIA_MAP[slug]
+  return folder ? `${YUHONAS}/${folder}/0.jpg` : null
+}
 
 // ---------------------------------------------------------------------------
 // Warm-up primitives

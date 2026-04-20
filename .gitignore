@@ -45,3 +45,7 @@ supabase/.temp
 # Misc
 *.pem
 .vercel
+
+# Perf baseline artifacts (Lighthouse JSON/HTML, phone screenshots)
+perf/
+fitforge.operscale.cloud-*.json
