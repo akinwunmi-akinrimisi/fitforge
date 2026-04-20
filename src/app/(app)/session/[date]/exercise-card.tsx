@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { ExerciseDetailDrawer } from './exercise-detail-drawer'
 import { RestTimer } from './rest-timer'
 import { logSet, undoLastSet } from '../actions'
+import { enqueueSet } from '@/lib/offline/queue'
 import type { ExerciseCardData } from './types'
 
 export function ExerciseCard({
@@ -80,7 +81,25 @@ export function ExerciseCard({
       }
       if (r2 !== undefined) payload.rpe = r2
 
-      const res = await logSet(payload)
+      // Offline-first: if we already know we're offline, queue and skip the
+      // round-trip. Otherwise try the server action; if it throws (network),
+      // fall back to the queue.
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        await enqueueSet(payload)
+        toast.success(`Set ${nextSetNumber} queued (offline)`)
+        setShowTimer(true)
+        return
+      }
+
+      let res: Awaited<ReturnType<typeof logSet>>
+      try {
+        res = await logSet(payload)
+      } catch {
+        await enqueueSet(payload)
+        toast.success(`Set ${nextSetNumber} queued (network fault)`)
+        setShowTimer(true)
+        return
+      }
       if (res.ok) {
         toast.success(`Set ${nextSetNumber} logged`)
         setShowTimer(true)

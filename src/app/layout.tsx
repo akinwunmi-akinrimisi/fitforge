@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   applicationName: 'FitForge90',
   formatDetection: { telephone: false, date: false, address: false, email: false, url: false },
   robots: { index: false, follow: false },
+  manifest: '/manifest.webmanifest',
 }
 
 export const viewport: Viewport = {

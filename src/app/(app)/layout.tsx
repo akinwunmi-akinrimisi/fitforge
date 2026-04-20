@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createSupabaseServerClient } from '@/lib/supabase/server'
+import { PwaRegister } from '@/app/pwa-register'
 
 export const dynamic = 'force-dynamic'
 
@@ -23,6 +24,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-[1200px] flex-col px-4 pb-20">
+      <PwaRegister />
       <header className="flex items-center justify-between py-6">
         <Link href="/dashboard" className="section-eyebrow">
           FitForge90
