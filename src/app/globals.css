@@ -8,14 +8,15 @@
     --foreground: 20 10% 10%;
     --card: 0 0% 100%;
     --card-foreground: 20 10% 10%;
-    --primary: 12 78% 50%;
+    /* primary: darkened from L=50% to L=42% so white text clears WCAG AA 4.5:1 */
+    --primary: 12 78% 42%;
     --primary-foreground: 0 0% 100%;
     --muted: 40 8% 88%;
-    --muted-foreground: 20 5% 40%;
-    --accent: 125 15% 48%;
+    --muted-foreground: 20 5% 32%;
+    --accent: 125 15% 42%;
     --accent-foreground: 0 0% 100%;
     --border: 20 6% 85%;
-    --ring: 12 78% 50%;
+    --ring: 12 78% 42%;
     --radius: 0.25rem;
   }
 
@@ -24,14 +25,15 @@
     --foreground: 40 5% 95%;
     --card: 0 0% 7%;
     --card-foreground: 40 5% 95%;
-    --primary: 12 78% 55%;
+    /* Dark mode primary: L=45% clears 4.5:1 on white text while staying vibrant */
+    --primary: 12 78% 45%;
     --primary-foreground: 0 0% 100%;
     --muted: 0 0% 15%;
-    --muted-foreground: 40 5% 65%;
-    --accent: 125 20% 55%;
+    --muted-foreground: 40 5% 70%;
+    --accent: 125 20% 50%;
     --accent-foreground: 0 0% 0%;
     --border: 0 0% 18%;
-    --ring: 12 78% 55%;
+    --ring: 12 78% 45%;
   }
 
   [data-surface='session'] {
@@ -40,14 +42,14 @@
     --foreground: 40 5% 95%;
     --card: 0 0% 7%;
     --card-foreground: 40 5% 95%;
-    --primary: 12 78% 55%;
+    --primary: 12 78% 45%;
     --primary-foreground: 0 0% 100%;
     --muted: 0 0% 15%;
-    --muted-foreground: 40 5% 65%;
-    --accent: 125 20% 55%;
+    --muted-foreground: 40 5% 70%;
+    --accent: 125 20% 50%;
     --accent-foreground: 0 0% 0%;
     --border: 0 0% 18%;
-    --ring: 12 78% 55%;
+    --ring: 12 78% 45%;
   }
 }
 
@@ -57,7 +59,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background font-sans text-foreground antialiased;
     font-feature-settings: 'ss01', 'ss02';
   }
 
