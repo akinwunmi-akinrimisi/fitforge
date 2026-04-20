@@ -163,13 +163,13 @@ export function ExerciseCard({
       </header>
 
       {data.library?.gif_url && (
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted sm:aspect-[16/9]">
+        <div className="relative mx-auto aspect-square w-full max-w-[320px] overflow-hidden rounded-md bg-white">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={data.library.gif_url}
             alt={data.library.name}
             loading="lazy"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
           />
         </div>
       )}

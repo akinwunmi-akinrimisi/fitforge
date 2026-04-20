@@ -1,5 +1,5 @@
 /**
- * Exercise library seed — M2 (media layer upgraded to animated GIFs in 0007_exercise_media_animated).
+ * Exercise library seed — M2 (media self-hosted in Supabase Storage, migration 0008).
  *
  * Every exercise referenced by a phase template lives here with the full
  * educational + safety schema. Content is deliberate and reviewed — users
@@ -8,120 +8,104 @@
  * Schema: see src/domain/exercise.ts.
  * Spec:   docs/specs/exercise-library-spec.md.
  *
- * Media: slugs map to animated GIFs on fitnessprogramer.com (URLs curated via
- * azilRababe/Exercises_Dataset). 6 exercises have no analog and resolve to
- * null — the session UI gracefully skips the <img>.
+ * Media: slugs map to files in the Supabase Storage `exercise-media` public
+ * bucket (self-hosted, not a third-party CDN). Filename is `<slug>.{gif|png}`.
+ * The public URL is assembled at seed time from env vars so the anon key
+ * isn't hard-coded in source. 6 exercises have no analog in our source
+ * catalog and resolve to null — the session UI gracefully skips the <img>.
  *
- * Source of truth for the mapping is MEDIA_MAP below AND the `exercises`
- * table gif_url column (migrations 0006 + 0007). Keep them in sync when
- * adding exercises.
+ * Source of truth for the mapping is MEDIA_FILES below AND the `exercises`
+ * table gif_url column (migrations 0006 + 0007 + 0008). Keep them in sync
+ * when adding exercises.
  *
- * Deferred: mirror fitnessprogramer GIFs into a Supabase Storage
- * `exercise-media` public bucket to remove the third-party CDN dependency.
+ * To re-seed: ensure SUPABASE_URL + SUPABASE_ANON_KEY are set in env.
  */
 import type { Exercise } from '@/domain/exercise'
 
-const MEDIA_MAP: Record<string, string | null> = {
+// Filename in the `exercise-media` Supabase Storage bucket.
+// null means this exercise has no demo media — UI hides the image slot.
+const MEDIA_FILES: Record<string, string | null> = {
   // push
-  'barbell-bench-press':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Bench-Press.gif',
-  'cable-triceps-pushdown':
-    'https://fitnessprogramer.com/wp-content/uploads/2022/11/One-arm-triceps-pushdown.gif',
-  'close-grip-bench-press':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Close-Grip-Bench-Press.gif',
-  dips: 'https://fitnessprogramer.com/wp-content/uploads/2022/04/parallel-bar-dip.gif',
-  'incline-dumbbell-press':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Incline-Dumbbell-Press.gif',
-  'lateral-raises':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Lateral-Raise.gif',
-  'overhead-press':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/07/Barbell-Standing-Military-Press.gif',
-  'push-ups': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Push-Up.gif',
-  'seated-dumbbell-shoulder-press':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shoulder-Press.gif',
-  'skull-crushers':
-    'https://fitnessprogramer.com/wp-content/uploads/2022/02/Bodyweight-Skull-Crushers.gif',
+  'barbell-bench-press': 'barbell-bench-press.gif',
+  'cable-triceps-pushdown': 'cable-triceps-pushdown.gif',
+  'close-grip-bench-press': 'close-grip-bench-press.gif',
+  dips: 'dips.gif',
+  'incline-dumbbell-press': 'incline-dumbbell-press.gif',
+  'lateral-raises': 'lateral-raises.gif',
+  'overhead-press': 'overhead-press.gif',
+  'push-ups': 'push-ups.gif',
+  'seated-dumbbell-shoulder-press': 'seated-dumbbell-shoulder-press.gif',
+  'skull-crushers': 'skull-crushers.gif',
   // pull
-  'barbell-curl': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Curl.gif',
-  'barbell-row':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Bent-Over-Row.gif',
-  'chest-supported-row': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Row.gif',
-  'chin-ups': 'https://fitnessprogramer.com/wp-content/uploads/2021/03/Chin-Up.gif',
-  'dumbbell-bicep-curl':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Curl.gif',
-  'face-pull': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Face-Pull.gif',
-  'lat-pulldown': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Lat-Pulldown.gif',
-  'pull-ups': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Pull-up.gif',
-  'seated-cable-row':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Seated-Cable-Row.gif',
-  'single-arm-dumbbell-row':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Row.gif',
+  'barbell-curl': 'barbell-curl.gif',
+  'barbell-row': 'barbell-row.gif',
+  'chest-supported-row': 'chest-supported-row.gif',
+  'chin-ups': 'chin-ups.gif',
+  'dumbbell-bicep-curl': 'dumbbell-bicep-curl.gif',
+  'face-pull': 'face-pull.gif',
+  'lat-pulldown': 'lat-pulldown.gif',
+  'pull-ups': 'pull-ups.gif',
+  'seated-cable-row': 'seated-cable-row.gif',
+  'single-arm-dumbbell-row': 'single-arm-dumbbell-row.gif',
   // squat
-  'barbell-back-squat': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/BARBELL-SQUAT.gif',
-  'bulgarian-split-squat':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/05/Barbell-Bulgarian-Split-Squat.gif',
-  'front-squat': 'https://fitnessprogramer.com/wp-content/uploads/2021/06/front-squat.gif',
-  'goblet-squat':
-    'https://fitnessprogramer.com/wp-content/uploads/2023/01/Dumbbell-Goblet-Squat.gif',
-  'pause-squat': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/BARBELL-SQUAT.gif',
+  'barbell-back-squat': 'barbell-back-squat.gif',
+  'bulgarian-split-squat': 'bulgarian-split-squat.gif',
+  'front-squat': 'front-squat.gif',
+  'goblet-squat': 'goblet-squat.gif',
+  'pause-squat': 'pause-squat.gif',
   // hinge
-  'conventional-deadlift':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Deadlift.gif',
+  'conventional-deadlift': 'conventional-deadlift.gif',
   'hip-thrust': null,
-  'kettlebell-swing':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/09/Kettlebell-Swings.gif',
-  'romanian-deadlift':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Romanian-Deadlift.gif',
-  'trap-bar-deadlift':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/06/Trap-Bar-Deadlift.gif',
+  'kettlebell-swing': 'kettlebell-swing.gif',
+  'romanian-deadlift': 'romanian-deadlift.gif',
+  'trap-bar-deadlift': 'trap-bar-deadlift.gif',
   // carry
-  'farmers-carry':
-    'https://fitnessprogramer.com/wp-content/uploads/2022/02/Farmers-walk_Cardio.gif',
+  'farmers-carry': 'farmers-carry.gif',
   'sled-push': null,
   // core
-  'ab-wheel-rollout':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/06/Ab-Wheel-Rollout.gif',
-  'cable-crunch':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/09/Standing-Cable-Crunch.gif',
-  'dead-bug': 'https://fitnessprogramer.com/wp-content/uploads/2021/05/Dead-Bug.gif',
-  'hanging-knee-raise':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Hanging-Knee-Raises.gif',
-  'hanging-leg-raise':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/02/Hanging-Knee-Raises.gif',
-  'pallof-press':
-    'https://fitnessprogramer.com/wp-content/uploads/2022/02/Cable-Half-Kneeling-Pallof-Press.gif',
-  plank: 'https://fitnessprogramer.com/wp-content/uploads/2021/02/plank.gif',
-  'side-plank': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Side-Plank-1-360x360.png',
+  'ab-wheel-rollout': 'ab-wheel-rollout.gif',
+  'cable-crunch': 'cable-crunch.gif',
+  'dead-bug': 'dead-bug.gif',
+  'hanging-knee-raise': 'hanging-knee-raise.gif',
+  'hanging-leg-raise': 'hanging-leg-raise.gif',
+  'pallof-press': 'pallof-press.gif',
+  plank: 'plank.gif',
+  'side-plank': 'side-plank.png',
   // conditioning
-  'assault-bike-intervals': 'https://fitnessprogramer.com/wp-content/uploads/2021/06/Bike.gif',
+  'assault-bike-intervals': 'assault-bike-intervals.gif',
   'kettlebell-complex': null,
-  'rowing-intervals': 'https://fitnessprogramer.com/wp-content/uploads/2021/06/Rowing-Machine.gif',
-  'treadmill-intervals': 'https://fitnessprogramer.com/wp-content/uploads/2021/07/Run.gif',
-  'treadmill-steady-state': 'https://fitnessprogramer.com/wp-content/uploads/2021/09/Walking.gif',
+  'rowing-intervals': 'rowing-intervals.gif',
+  'treadmill-intervals': 'treadmill-intervals.gif',
+  'treadmill-steady-state': 'treadmill-steady-state.gif',
   // mobility
-  'couch-stretch':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/08/Kneeling-Hip-Flexor-Stretch.gif',
-  'dead-hang': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/dead-hang-360x360.png',
-  'neck-retraction': 'https://fitnessprogramer.com/wp-content/uploads/2021/06/Chin-Tuck.gif',
+  'couch-stretch': 'couch-stretch.gif',
+  'dead-hang': 'dead-hang.png',
+  'neck-retraction': 'neck-retraction.gif',
   'pigeon-pose': null,
   'thoracic-rotation-quadruped': null,
-  'wall-slides': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/wall-slide.gif',
+  'wall-slides': 'wall-slides.gif',
   // warmup
-  'band-pull-apart': 'https://fitnessprogramer.com/wp-content/uploads/2021/06/Band-pull-apart.gif',
-  'cat-cow': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/cat-cow.gif',
-  'glute-bridge': 'https://fitnessprogramer.com/wp-content/uploads/2021/02/Glute-Bridge-.gif',
-  'hip-90-90': 'https://fitnessprogramer.com/wp-content/uploads/2022/08/90-90-Hip-Stretch.gif',
-  'leg-swings': 'https://fitnessprogramer.com/wp-content/uploads/2023/06/Lateral-Leg-Swings.gif',
-  'scapular-push-ups':
-    'https://fitnessprogramer.com/wp-content/uploads/2021/10/Scapular-Protraction-and-Retraction.gif',
+  'band-pull-apart': 'band-pull-apart.gif',
+  'cat-cow': 'cat-cow.gif',
+  'glute-bridge': 'glute-bridge.gif',
+  'hip-90-90': 'hip-90-90.gif',
+  'leg-swings': 'leg-swings.gif',
+  'scapular-push-ups': 'scapular-push-ups.gif',
   'worlds-greatest-stretch': null,
 }
 
 const GIF = (slug: string): string | null => {
-  if (!(slug in MEDIA_MAP)) {
-    throw new Error(`exercises.ts: no media mapping for slug "${slug}" — update MEDIA_MAP`)
+  if (!(slug in MEDIA_FILES)) {
+    throw new Error(`exercises.ts: no media mapping for slug "${slug}" — update MEDIA_FILES`)
   }
-  return MEDIA_MAP[slug] ?? null
+  const file = MEDIA_FILES[slug]
+  if (!file) return null
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+  const anon = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!supabaseUrl || !anon) {
+    throw new Error('exercises.ts: SUPABASE_URL + SUPABASE_ANON_KEY required to build media URLs')
+  }
+  return `${supabaseUrl}/storage/v1/object/public/exercise-media/${file}?apikey=${anon}`
 }
 
 // ---------------------------------------------------------------------------
